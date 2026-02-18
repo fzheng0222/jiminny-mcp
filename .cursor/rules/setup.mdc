@@ -1,0 +1,97 @@
+---
+description: Guide for setting up the Jiminny MCP server in Cursor
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Jiminny MCP Server — Setup Guide
+
+When the user asks to "set up", "install", "configure", or "get started" with this project, follow these steps exactly:
+
+## Step 1: Check prerequisites
+
+Run these checks:
+
+```bash
+python3 --version
+```
+
+If Python < 3.10 or missing, tell the user to install Python 3.10+ from https://www.python.org/downloads/ and stop.
+
+```bash
+uv --version
+```
+
+If `uv` is missing, install it:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+## Step 2: Create virtual environment and install dependencies
+
+```bash
+uv venv .venv
+uv pip install -e .
+```
+
+## Step 3: Ask the user for their Jiminny token
+
+Tell the user:
+
+> I need your Jiminny API token to complete setup. Here's how to get it:
+>
+> 1. Open **https://app.jiminny.com** in Chrome and log in
+> 2. Press **F12** (or **Cmd+Option+I** on Mac) to open Developer Tools
+> 3. Click the **Network** tab at the top
+> 4. Refresh the page (Cmd+R)
+> 5. Click any request in the list
+> 6. Scroll to **Request Headers** and find `Authorization`
+> 7. Copy everything after `Bearer ` (the long string starting with `eyJ`)
+>
+> Paste the token here when ready.
+
+Wait for the user to provide the token. Do NOT proceed without it.
+
+## Step 4: Write the Cursor MCP configuration
+
+Determine the absolute path to this project's `.venv/bin/python` and `src/server.py`.
+
+Read the existing `~/.cursor/mcp.json` if it exists (it may have other MCP servers configured). Merge the jiminny server into it. If the file doesn't exist, create it.
+
+The final config should include:
+
+```json
+{
+  "mcpServers": {
+    "jiminny": {
+      "command": "<absolute-path-to-.venv/bin/python>",
+      "args": ["<absolute-path-to-src/server.py>"],
+      "env": {
+        "JIMINNY_TOKEN": "<the-token-from-user>"
+      }
+    }
+  }
+}
+```
+
+IMPORTANT: Preserve any existing mcpServers entries — do NOT overwrite them.
+
+## Step 5: Tell the user to restart
+
+Tell the user:
+
+> Setup complete! Please restart Cursor now (Cmd+Shift+P → "Reload Window").
+>
+> Then open a new chat and try: "List my recent Jiminny conversations"
+>
+> If you get a 401 error later, your token has expired — just ask me to "update my Jiminny token" and I'll walk you through it again.
+
+## Token refresh
+
+When the user asks to "update token", "refresh token", or mentions a 401 error:
+
+1. Ask them to get a new token (same steps as above)
+2. Read `~/.cursor/mcp.json`
+3. Update only the `JIMINNY_TOKEN` value in the jiminny server config
+4. Tell them to restart Cursor

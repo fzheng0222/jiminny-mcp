@@ -10,92 +10,52 @@ Ask Cursor things like:
 - "Summarize last week's SoV growth meeting"
 - "Find calls where pricing was discussed"
 
-## Quick Setup (< 5 minutes)
+## Setup (3 minutes)
 
-### 1. Get your Jiminny token
-
-1. Open [app.jiminny.com](https://app.jiminny.com) in Chrome and log in
-2. Press **F12** (or **Cmd+Option+I** on Mac) to open Developer Tools
-3. Click the **Network** tab
-4. Refresh the page (**Cmd+R** or **F5**)
-5. Click any request in the list (e.g., one starting with `on-demand`)
-6. Scroll down to **Request Headers**
-7. Find the `Authorization` header — it looks like `Bearer eyJhbGci...`
-8. Copy everything **after** `Bearer ` (the long string starting with `eyJ`)
-
-> **Tip:** The token expires after a while. If you get a 401 error, repeat these steps to get a fresh token.
-
-### 2. Install the server
-
-**Option A — Automatic setup (recommended):**
+### 1. Clone this repo
 
 ```bash
 git clone https://github.com/fzheng0222/jiminny-mcp.git
-cd jiminny-mcp
-bash setup.sh
 ```
 
-**Option B — Manual setup:**
+### 2. Open in Cursor and ask it to set up
 
-1. Clone this repo somewhere on your machine:
-   ```bash
-   git clone https://github.com/fzheng0222/jiminny-mcp.git ~/.jiminny-mcp
-   cd ~/.jiminny-mcp
-   ```
+Open the cloned folder in Cursor, then in chat type:
 
-2. Create a virtual environment and install dependencies:
-   ```bash
-   uv venv .venv
-   uv pip install -e .
-   ```
-   (Don't have `uv`? Install it: `curl -LsSf https://astral.sh/uv/install.sh | sh`)
+> **"Help me set up this MCP server"**
 
-3. Add to Cursor — open (or create) `~/.cursor/mcp.json` and add:
-   ```json
-   {
-     "mcpServers": {
-       "jiminny": {
-         "command": "/Users/YOUR_USERNAME/.jiminny-mcp/.venv/bin/python",
-         "args": ["/Users/YOUR_USERNAME/.jiminny-mcp/src/server.py"],
-         "env": {
-           "JIMINNY_TOKEN": "paste-your-token-here"
-         }
-       }
-     }
-   }
-   ```
-   Replace `YOUR_USERNAME` with your macOS username and paste your token.
+Cursor will automatically:
+- Install dependencies
+- Walk you through getting your Jiminny token (with step-by-step instructions)
+- Configure everything for you
 
-4. **Restart Cursor** (Cmd+Shift+P → "Reload Window")
+### 3. Restart Cursor
 
-### 3. Verify it works
+Press **Cmd+Shift+P** → type **"Reload Window"** → hit Enter.
 
-Open a new Cursor chat and type:
+That's it! Open a new chat and try: *"List my recent Jiminny conversations"*
 
-> List my recent Jiminny conversations
+## Token Expired?
 
-You should see a list of your team's recorded calls.
+If you see a 401 error, your token needs refreshing. Just ask Cursor:
 
-## Updating Your Token
+> **"Update my Jiminny token"**
 
-When your token expires (you'll see a 401 error), either:
-
-- **Re-run the setup:** `cd ~/.jiminny-mcp && bash setup.sh`
-- **Edit directly:** Open `~/.cursor/mcp.json`, replace the token value, and reload Cursor
+It will walk you through getting a new one.
 
 ## Available Tools
 
 | Tool | What it does |
 |---|---|
 | `jiminny_list_conversations` | Lists recorded calls (paginated, newest first) |
-| `jiminny_get_transcript` | Gets the full transcript of a call with speaker labels and timestamps |
-| `jiminny_get_summary` | Gets AI-generated summary, action items, and key points |
+| `jiminny_get_transcript` | Full transcript with speaker labels and timestamps |
+| `jiminny_get_summary` | AI-generated summary, action items, and key points |
 
 ## Troubleshooting
 
 | Problem | Fix |
 |---|---|
-| "JIMINNY_TOKEN is not set" | Check your `~/.cursor/mcp.json` has the token |
-| 401 error | Token expired — get a new one from Jiminny DevTools |
-| 403 error | You don't have access to that conversation |
-| Tools not showing in Cursor | Restart Cursor (Cmd+Shift+P → "Reload Window") |
+| "JIMINNY_TOKEN is not set" | Ask Cursor: "help me set up this MCP server" |
+| 401 error | Token expired — ask Cursor: "update my Jiminny token" |
+| 403 error | You don't have access to that conversation in Jiminny |
+| Tools not showing | Restart Cursor (Cmd+Shift+P → "Reload Window") |

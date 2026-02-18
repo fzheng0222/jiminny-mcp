@@ -43,6 +43,20 @@ If you see a 401 error, your token needs refreshing. Just ask Cursor:
 
 It will walk you through getting a new one.
 
+## Built-in Prompts (for Sales Leaders)
+
+These are pre-built workflows — just type the prompt name in Cursor chat:
+
+| Prompt | What to ask Cursor |
+|---|---|
+| **Deal Brief** | "Use the deal_brief prompt for Illuvium" |
+| **Weekly Digest** | "Use the weekly_sales_digest prompt" |
+| **Feature Demand** | "Use the feature_demand prompt" |
+
+- **Deal Brief** — Get a full brief on any deal: status, stakeholders, risks, next steps
+- **Weekly Digest** — Monday morning summary of all calls, action items, and deals needing attention
+- **Feature Demand** — What product features are prospects asking for most across recent calls
+
 ## Available Tools
 
 | Tool | What it does |

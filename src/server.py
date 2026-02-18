@@ -413,6 +413,117 @@ async def jiminny_get_summary(params: ConversationIdInput) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Prompts — pre-built workflows for sales leaders
+# ---------------------------------------------------------------------------
+
+@mcp.prompt(
+    name="deal_brief",
+    description="Get a quick brief on a deal — status, next steps, risks, and key stakeholders from recent calls.",
+)
+def deal_brief(company_name: str) -> str:
+    return f"""I need a deal brief for **{company_name}**. Please:
+
+1. Use `jiminny_list_conversations` to find all recent calls mentioning "{company_name}" in the title or contact name. Check multiple pages if needed.
+2. For each matching call (up to the 5 most recent), use `jiminny_get_summary` to get the summary and action items.
+3. If summaries lack detail, use `jiminny_get_transcript` for the most recent 1-2 calls and analyze the transcript.
+
+Then synthesize a **Deal Brief** with these sections:
+
+## Deal Brief: {company_name}
+
+### Current Status
+One paragraph on where the deal stands right now.
+
+### Key Stakeholders
+Who from {company_name} is involved, and what are their roles/concerns.
+
+### Recent Activity
+Timeline of recent calls with key outcomes from each.
+
+### Open Action Items
+All unresolved action items across the calls, grouped by owner.
+
+### Risks & Blockers
+Any concerns, objections, delays, or budget issues mentioned.
+
+### Recommended Next Steps
+Your suggested priorities based on the call history.
+"""
+
+
+@mcp.prompt(
+    name="weekly_sales_digest",
+    description="Summarize all sales calls from the past week — key outcomes, action items, and deals that need attention.",
+)
+def weekly_sales_digest() -> str:
+    return """I need a **Weekly Sales Digest** covering all calls from the past week. Please:
+
+1. Use `jiminny_list_conversations` to get the recent conversations (page 1 should cover the last week).
+2. For each call from the past 7 days, use `jiminny_get_summary` to get summaries and action items.
+3. If a call seems particularly important (long duration, key accounts), get more detail from the transcript.
+
+Then produce a digest with these sections:
+
+## Weekly Sales Digest
+
+### Summary
+2-3 sentence overview of the week — how many calls, key themes, notable developments.
+
+### Deal Updates
+For each company/deal discussed this week:
+- **Company name**: What happened, what changed, what's next.
+
+### Action Items Due
+All open action items from this week's calls, grouped by person responsible. Flag any that seem urgent.
+
+### Deals Needing Attention
+Any deals where risks, blockers, budget concerns, or delays were mentioned. Explain why each needs attention.
+
+### Product & Feature Requests
+Any product features, capabilities, or integrations that prospects asked about or expressed interest in.
+
+### Key Metrics Mentioned
+Any numbers discussed — user counts, revenue figures, pricing, timelines.
+"""
+
+
+@mcp.prompt(
+    name="feature_demand",
+    description="Analyze recent sales calls to identify what product features and capabilities prospects are asking for most.",
+)
+def feature_demand() -> str:
+    return """I need a **Product Feature Demand Report** from recent sales calls. Please:
+
+1. Use `jiminny_list_conversations` to get the most recent calls (pages 1-2, covering the last 2-3 weeks).
+2. For each call, use `jiminny_get_summary` to scan for any product-related discussions.
+3. For calls where product features seem to be a topic (based on summary/action items), use `jiminny_get_transcript` to get the full context of what was discussed.
+
+Then produce a report with these sections:
+
+## Product Feature Demand Report
+
+### Top Requested Features
+Ranked list of features/capabilities mentioned across calls. For each:
+- **Feature name**: Brief description
+- **Mentioned in**: Which calls/companies asked for it
+- **Context**: Why they want it, what problem it solves for them
+- **Urgency**: How important it seemed (deal blocker vs. nice-to-have)
+
+### Integration Requests
+Any third-party tools, platforms, or services that prospects want to integrate with.
+
+### Pain Points
+Recurring frustrations or challenges prospects described that our product could address.
+
+### Competitive Gaps
+Any features that prospects mentioned competitors have that we don't.
+
+### Recommendations
+Top 3 features that would have the most impact on closing deals, based on frequency and urgency across calls.
+"""
+
+
+# ---------------------------------------------------------------------------
 # Text extraction helpers
 # ---------------------------------------------------------------------------
 
